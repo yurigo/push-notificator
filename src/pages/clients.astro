@@ -1,0 +1,117 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <h1>Connected Clients</h1>
+
+  <div class="container">
+    <button id="refreshClients">Refresh Client List</button>
+    
+    <div id="clientsList"></div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+  }
+
+  button {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0.5rem 0.5rem 1rem 0;
+  }
+
+  button:hover {
+    background: #45a049;
+  }
+
+  .client-card {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  .client-id {
+    font-family: monospace;
+    font-weight: bold;
+    color: #2196F3;
+  }
+
+  .send-btn {
+    background: #2196F3;
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .send-btn:hover {
+    background: #1976D2;
+  }
+</style>
+
+<script>
+  const refreshBtn = document.getElementById("refreshClients");
+  const clientsList = document.getElementById("clientsList");
+
+  async function loadClients() {
+    try {
+      const response = await fetch("/api/subscribe");
+      const data = await response.json();
+
+      if (clientsList) {
+        if (data.count === 0) {
+          clientsList.innerHTML = '<p>No clients connected yet.</p>';
+        } else {
+          clientsList.innerHTML = `
+            <h3>Connected Clients (${data.count})</h3>
+            ${data.clients.map((client: any) => `
+              <div class="client-card">
+                <div class="client-id">${client.id}</div>
+                <button class="send-btn" data-client-id="${client.fullId}">
+                  Send Test Notification
+                </button>
+              </div>
+            `).join('')}
+          `;
+
+          // Add event listeners to send buttons
+          document.querySelectorAll('.send-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+              const target = e.target as HTMLButtonElement;
+              const clientId = target.getAttribute('data-client-id');
+              const message = prompt('Enter message:', 'Hello specific client!');
+              
+              if (message && clientId) {
+                const response = await fetch(
+                  `/notification?text=${encodeURIComponent(message)}&id=${encodeURIComponent(clientId)}`
+                );
+                const result = await response.json();
+                alert(`Notification sent! ${JSON.stringify(result)}`);
+              }
+            });
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error loading clients:', error);
+      if (clientsList) {
+        clientsList.innerHTML = '<p>Error loading clients.</p>';
+      }
+    }
+  }
+
+  refreshBtn?.addEventListener("click", loadClients);
+
+  // Load clients on page load
+  loadClients();
+</script>

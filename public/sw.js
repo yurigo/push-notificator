@@ -44,9 +44,9 @@ self.addEventListener("push", function (event) {
       self.clients
         .matchAll({ includeUncontrolled: true, type: "window" })
         .then((clients) => {
-          console.log('Found clients:', clients.length);
+          console.log("Found clients:", clients.length);
           clients.forEach((client) => {
-            console.log('Sending message to client:', client.id);
+            console.log("Sending message to client:", client.id);
             client.postMessage({
               type: "PUSH_RECEIVED",
               notification: notificationData,

@@ -7,6 +7,10 @@ import Layout from "../layouts/Layout.astro";
   <h1>Enable Push Notifications</h1>
 
   <div class="container">
+    <div id="clientIdDisplay" style="background: #f0f0f0; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; font-family: monospace;">
+      <strong>Your Client ID:</strong> <span id="clientIdValue">Loading...</span>
+    </div>
+
     <button id="enableNotifications">Enable Notifications</button>
     <button id="testWebhook">Test Webhook</button>
 
@@ -82,10 +86,30 @@ import Layout from "../layouts/Layout.astro";
   const enableBtn = document.getElementById("enableNotifications");
   const testBtn = document.getElementById("testWebhook");
   const notificationList = document.getElementById("notificationList");
+  const clientIdValueSpan = document.getElementById("clientIdValue");
 
   let notificationPermission = Notification.permission;
   let swRegistration: ServiceWorkerRegistration | null = null;
   let pushSubscription: PushSubscription | null = null;
+  let clientId: string | null = null;
+
+  // Generate or retrieve client ID
+  function getClientId(): string {
+    let id = localStorage.getItem('clientId');
+    if (!id) {
+      id = 'client-' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      localStorage.setItem('clientId', id);
+    }
+    return id;
+  }
+
+  clientId = getClientId();
+  console.log('Client ID:', clientId);
+  
+  // Display client ID
+  if (clientIdValueSpan) {
+    clientIdValueSpan.textContent = clientId;
+  }
 
   function updateStatus(message: string) {
     if (statusDiv) {
@@ -95,7 +119,7 @@ import Layout from "../layouts/Layout.astro";
 
   function addNotificationToList(message: string, timestamp: string) {
     if (notificationList) {
-      console.log('Adding notification to list:', message, timestamp);
+      console.log("Adding notification to list:", message, timestamp);
       const li = document.createElement("li");
       li.innerHTML = `
 				<div><strong>${message}</strong></div>
@@ -103,7 +127,7 @@ import Layout from "../layouts/Layout.astro";
 			`;
       notificationList.insertBefore(li, notificationList.firstChild);
     } else {
-      console.error('notificationList element not found!');
+      console.error("notificationList element not found!");
     }
   }
 
@@ -135,15 +159,22 @@ import Layout from "../layouts/Layout.astro";
 
       console.log("Push subscription:", subscription);
 
-      // Send subscription to server
+      // Send subscription to server with client ID
       const saveResponse = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(subscription),
+        body: JSON.stringify({
+          subscription: subscription,
+          clientId: clientId
+        }),
       });
 
       const result = await saveResponse.json();
       console.log("Subscription saved:", result);
+      console.log("Your Client ID:", result.clientId);
+
+      // Show client ID in status
+      updateStatus(`✅ Push notifications enabled! Your Client ID: ${result.clientId}`);
 
       return subscription;
     } catch (error) {
@@ -191,7 +222,6 @@ import Layout from "../layouts/Layout.astro";
       // Subscribe to push
       pushSubscription = await subscribeToPush(registration);
 
-      updateStatus("✅ Push notifications enabled!");
       if (enableBtn) {
         enableBtn.textContent = "Push Notifications Enabled";
         (enableBtn as HTMLButtonElement).disabled = true;
@@ -215,7 +245,7 @@ import Layout from "../layouts/Layout.astro";
 
       // Call the webhook endpoint - it will trigger push notifications
       const response = await fetch(
-        `/notification?idk=${encodeURIComponent(testMessage)}`,
+        `/notification?text=${encodeURIComponent(testMessage)}`,
       );
       const data = await response.json();
 
@@ -236,11 +266,12 @@ import Layout from "../layouts/Layout.astro";
 
       if (event.data.type === "PUSH_RECEIVED") {
         const notification = event.data.notification;
-        console.log('Processing push notification:', notification);
+        console.log("Processing push notification:", notification);
         // Add to HTML list
         const message = notification.body || notification.data.message;
-        const timestamp = notification.data.timestamp || new Date().toISOString();
-        console.log('Extracted message:', message, 'timestamp:', timestamp);
+        const timestamp =
+          notification.data.timestamp || new Date().toISOString();
+        console.log("Extracted message:", message, "timestamp:", timestamp);
         addNotificationToList(message, timestamp);
       }
     });
@@ -256,20 +287,20 @@ import Layout from "../layouts/Layout.astro";
           const subscription = await registration.pushManager.getSubscription();
           if (subscription) {
             pushSubscription = subscription;
-            console.log('Already subscribed:', subscription);
+            console.log("Already subscribed:", subscription);
             updateStatus("✅ Push notifications already enabled");
             if (enableBtn) {
               enableBtn.textContent = "Push Notifications Enabled";
               (enableBtn as HTMLButtonElement).disabled = true;
             }
           } else {
-            console.log('No existing subscription found');
+            console.log("No existing subscription found");
             updateStatus(
               'Click "Enable Notifications" to receive push notifications',
             );
           }
         } else {
-          console.log('No service worker registration found');
+          console.log("No service worker registration found");
           updateStatus(
             'Click "Enable Notifications" to receive push notifications',
           );
