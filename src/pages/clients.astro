@@ -107,193 +107,13 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <style is:global>
-  .page-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: var(--spacing-xl);
-  }
-
-  .page-header {
-    margin-bottom: var(--spacing-xl);
-  }
-
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--spacing-lg);
-  }
-
-  .page-header h1 {
-    margin-bottom: var(--spacing-sm);
-    font-size: 2rem;
-  }
-
-  .page-description {
-    font-size: 1rem;
-    color: var(--color-text-secondary);
-  }
-
-  .btn-refresh {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: 0.75rem 1.25rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-surface);
-    color: var(--color-text-primary);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .btn-refresh:hover {
-    background: var(--color-bg-secondary);
-    border-color: var(--color-primary);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
-  }
-
-  .btn-refresh svg {
-    transition: transform 0.3s ease;
-  }
-
-  .btn-refresh:active svg {
-    transform: rotate(180deg);
-  }
-
-  /* Stats Container */
-  .stats-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
-  }
-
-  .stat-card {
-    background: linear-gradient(
-      135deg,
-      var(--color-surface) 0%,
-      var(--color-bg-secondary) 100%
-    );
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--color-primary-light);
-  }
-
-  .stat-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: var(--radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .stat-icon svg {
-    width: 28px;
-    height: 28px;
-  }
-
-  .stat-icon-primary {
-    background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
-    color: white;
-  }
-
-  .stat-icon-success {
-    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-    color: white;
-  }
-
-  .stat-icon-info {
-    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-    color: white;
-  }
-
-  .stat-content {
-    flex: 1;
-  }
-
-  .stat-label {
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-    font-weight: 500;
-    margin-bottom: var(--spacing-xs);
-  }
-
-  .stat-value {
-    font-size: 1.875rem;
-    font-weight: 700;
-    color: var(--color-text-primary);
-    line-height: 1;
-  }
-
-  /* Search Container */
-  .search-container {
-    margin-bottom: var(--spacing-lg);
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 0.875rem 1.25rem;
-    font-size: 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background: var(--color-surface);
-    transition: all 0.2s ease;
-  }
-
-  .search-input:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-  }
-
-  /* Clients Grid */
+  /* Component-specific styles for clients page */
   .clients-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: var(--spacing-lg);
   }
 
-  @media (max-width: 768px) {
-    .clients-grid {
-      grid-template-columns: 1fr;
-      gap: var(--spacing-md);
-    }
-    .header-content {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .btn-refresh {
-      width: 100%;
-      justify-content: center;
-    }
-    .client-header-row {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--spacing-xs);
-    }
-    .client-meta {
-      flex-wrap: wrap;
-    }
-  }
-
-  /* Client Card */
   .client-card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -333,54 +153,8 @@ import Layout from "../layouts/Layout.astro";
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
 
-  .client-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-  }
-
-  .active-badge {
-    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-    color: #065f46;
-    border: 1px solid #6ee7b7;
-  }
-
-  .badge-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.5;
-      transform: scale(0.95);
-    }
-  }
-
   .client-card-body {
     padding: var(--spacing-lg);
-  }
-
-  .client-label {
-    font-size: 0.6875rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-text-secondary);
-    margin-bottom: 8px;
   }
 
   .client-id-box {
@@ -399,41 +173,6 @@ import Layout from "../layouts/Layout.astro";
   .client-info-grid {
     display: grid;
     gap: var(--spacing-md);
-  }
-
-  .info-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px;
-    background: var(--color-bg-secondary);
-    border-radius: var(--radius-md);
-    transition: all 0.2s ease;
-  }
-
-  .info-item:hover {
-    background: #f3f4f6;
-  }
-
-  .info-item svg {
-    color: var(--color-primary);
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .info-label {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    color: var(--color-text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 4px;
-  }
-
-  .info-value {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--color-text-primary);
   }
 
   .client-card-footer {
@@ -475,58 +214,10 @@ import Layout from "../layouts/Layout.astro";
     flex-shrink: 0;
   }
 
-  /* Empty State */
-  .empty-state {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: var(--spacing-2xl) var(--spacing-lg);
-    background: var(--color-surface);
-    border: 2px dashed var(--color-border);
-    border-radius: var(--radius-xl);
-  }
-
-  .empty-state svg {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto var(--spacing-lg);
-    color: var(--color-text-tertiary);
-    opacity: 0.4;
-  }
-
-  .empty-state h3 {
-    font-size: 1.25rem;
-    margin-bottom: var(--spacing-sm);
-    color: var(--color-text-primary);
-  }
-
-  .empty-state p {
-    color: var(--color-text-secondary);
-    max-width: 400px;
-    margin: 0 auto;
-  }
-
-  .loading-state {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: var(--spacing-2xl);
-    color: var(--color-text-secondary);
-    font-size: 1.125rem;
-  }
-
-  .loading-spinner {
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    border: 3px solid var(--color-border);
-    border-top-color: var(--color-primary);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin-bottom: var(--spacing-md);
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
+  @media (max-width: 768px) {
+    .clients-grid {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-md);
     }
   }
 </style>
@@ -601,14 +292,14 @@ import Layout from "../layouts/Layout.astro";
         <div class="client-card">
           <div class="client-card-header">
             <div class="client-avatar">${getInitials(client.id)}</div>
-            <div class="client-badge active-badge">
+            <div class="badge badge-active">
               <span class="badge-dot"></span>
               Active
             </div>
           </div>
           
           <div class="client-card-body">
-            <div class="client-label">Client ID</div>
+            <div class="label">Client ID</div>
             <div class="client-id-box">${client.id}</div>
             
             <div class="client-info-grid">

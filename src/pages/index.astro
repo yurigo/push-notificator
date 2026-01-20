@@ -89,12 +89,7 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <style>
-  .page-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--spacing-xl);
-  }
-
+  /* Page-specific styles for index */
   .page-header {
     text-align: center;
     margin-bottom: var(--spacing-2xl);
@@ -128,33 +123,9 @@ import Layout from "../layouts/Layout.astro";
     gap: var(--spacing-lg);
   }
 
-  .card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-    transition: box-shadow 0.2s ease;
-  }
-
-  .card:hover {
-    box-shadow: var(--shadow-md);
-  }
-
-  .card-header {
-    padding: var(--spacing-lg);
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-bg-secondary);
-  }
-
-  .card-header h3 {
-    margin: 0;
-    font-size: 1.125rem;
-    font-weight: 600;
-  }
-
-  .card-body {
-    padding: var(--spacing-lg);
+  .sidebar {
+    position: sticky;
+    top: calc(var(--spacing-2xl) + 60px);
   }
 
   .client-id-display {
@@ -169,79 +140,6 @@ import Layout from "../layouts/Layout.astro";
     color: var(--color-text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-  }
-
-  .client-id-value {
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-    padding: var(--spacing-md);
-    background: var(--color-bg-tertiary);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    color: var(--color-primary);
-    word-break: break-all;
-    font-weight: 500;
-  }
-
-  .help-text {
-    font-size: 0.875rem;
-    color: var(--color-text-tertiary);
-    margin-top: var(--spacing-xs);
-  }
-
-  .button-group {
-    display: flex;
-    gap: var(--spacing-md);
-    flex-wrap: wrap;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 500;
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .btn:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-  }
-
-  .btn:active {
-    transform: translateY(0);
-  }
-
-  .btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .btn-primary {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-    color: var(--color-text-inverse);
-  }
-
-  .btn-primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
-  }
-
-  .btn-secondary {
-    background: var(--color-surface);
-    color: var(--color-primary);
-    border: 1px solid var(--color-border);
-  }
-
-  .btn-secondary:hover:not(:disabled) {
-    background: var(--color-bg-secondary);
-    border-color: var(--color-primary);
   }
 
   .status-message {
@@ -311,18 +209,6 @@ import Layout from "../layouts/Layout.astro";
     font-size: 0.75rem;
     color: var(--color-text-tertiary);
     font-weight: 500;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: var(--spacing-xl);
-    color: var(--color-text-tertiary);
-    font-size: 0.875rem;
-  }
-
-  .sidebar {
-    position: sticky;
-    top: calc(var(--spacing-2xl) + 60px);
   }
 
   @keyframes slideIn {
