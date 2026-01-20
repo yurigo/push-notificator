@@ -80,9 +80,7 @@ import Layout from "../../layouts/Layout.astro";
               class="form-textarea"
               placeholder="Enter your notification message..."
               rows="6"></textarea>
-            <div class="help-text">
-              Tip: Press Ctrl+Enter to send quickly
-            </div>
+            <div class="help-text">Tip: Press Ctrl+Enter to send quickly</div>
           </div>
 
           <button id="sendBtn" class="btn btn-primary btn-large">
@@ -430,15 +428,15 @@ import Layout from "../../layouts/Layout.astro";
     if (!historyDiv) return;
 
     if (sendHistory.length === 0) {
-      historyDiv.innerHTML = '<div class="empty-history">No notifications sent yet.</div>';
+      historyDiv.innerHTML =
+        '<div class="empty-history">No notifications sent yet.</div>';
       return;
     }
 
     historyDiv.innerHTML = sendHistory
-      .map(
-        (item) => {
-          const clientsText = item.sentTo === 1 ? 'client' : 'clients';
-          return `
+      .map((item) => {
+        const clientsText = item.sentTo === 1 ? "client" : "clients";
+        return `
       <div class="history-item">
         <div class="history-time">${new Date(item.time).toLocaleString()}</div>
         <div class="history-client">
@@ -448,8 +446,7 @@ import Layout from "../../layouts/Layout.astro";
         <div class="history-message">"${item.message}"</div>
       </div>
     `;
-        },
-      )
+      })
       .join("");
   }
 
