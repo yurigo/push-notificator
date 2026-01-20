@@ -247,9 +247,8 @@ import Layout from "../layouts/Layout.astro";
           // Add event listeners to send buttons
           document.querySelectorAll(".send-btn").forEach((btn) => {
             btn.addEventListener("click", async (e) => {
-              const target = e.target as HTMLButtonElement;
-              const clientId = target.getAttribute("data-client-id") || 
-                               target.closest("button")?.getAttribute("data-client-id");
+              const button = e.currentTarget as HTMLButtonElement;
+              const clientId = button.getAttribute("data-client-id");
               const message = prompt(
                 "Enter message:",
                 "Hello specific client!",

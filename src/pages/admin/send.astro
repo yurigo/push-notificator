@@ -532,16 +532,19 @@ import Layout from "../../layouts/Layout.astro";
 
     historyDiv.innerHTML = sendHistory
       .map(
-        (item) => `
+        (item) => {
+          const clientsText = item.sentTo === 1 ? 'client' : 'clients';
+          return `
       <div class="history-item">
         <div class="history-time">${new Date(item.time).toLocaleString()}</div>
         <div class="history-client">
           ${item.broadcast ? "🔊 BROADCAST" : item.clientId}
-          ${item.broadcast ? ` (${item.sentTo} client${item.sentTo !== 1 ? 's' : ''})` : ""}
+          ${item.broadcast ? ` (${item.sentTo} ${clientsText})` : ""}
         </div>
         <div class="history-message">"${item.message}"</div>
       </div>
-    `,
+    `;
+        },
       )
       .join("");
   }
