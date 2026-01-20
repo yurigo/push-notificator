@@ -1,0 +1,380 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout>
+  <h1>Admin - Send Notifications</h1>
+
+  <div class="container">
+    <div class="form-section">
+      <label for="clientSelect">
+        <strong>Select Client:</strong>
+      </label>
+      <select id="clientSelect">
+        <option value="">Loading clients...</option>
+      </select>
+      <button id="refreshClients" class="secondary-btn">Refresh</button>
+
+      <div class="client-info" id="clientInfo"></div>
+
+      <label for="messageText">
+        <strong>Message:</strong>
+      </label>
+      <textarea
+        id="messageText"
+        placeholder="Enter your notification message..."
+        rows="6"></textarea>
+
+      <button id="sendBtn" class="primary-btn">Send Notification</button>
+
+      <div id="status"></div>
+    </div>
+
+    <div class="history-section">
+      <h2>Send History</h2>
+      <div id="history"></div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+  }
+
+  .form-section {
+    background: #f9f9f9;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+  }
+
+  label {
+    display: block;
+    margin: 1rem 0 0.5rem 0;
+    font-size: 16px;
+  }
+
+  select,
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: inherit;
+    box-sizing: border-box;
+  }
+
+  select {
+    margin-bottom: 0.5rem;
+    background: white;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0.5rem 0.5rem 0.5rem 0;
+  }
+
+  .primary-btn {
+    background: #4caf50;
+    width: 100%;
+    font-weight: bold;
+  }
+
+  .primary-btn:hover {
+    background: #45a049;
+  }
+
+  .primary-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  .secondary-btn {
+    background: #2196f3;
+    display: inline-block;
+    width: auto;
+  }
+
+  .secondary-btn:hover {
+    background: #1976d2;
+  }
+
+  .client-info {
+    background: #e3f2fd;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+    display: none;
+    font-size: 14px;
+  }
+
+  .client-info.visible {
+    display: block;
+  }
+
+  #status {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 4px;
+    display: none;
+  }
+
+  #status.visible {
+    display: block;
+  }
+
+  #status.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  #status.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .history-section {
+    background: #f9f9f9;
+    padding: 2rem;
+    border-radius: 8px;
+  }
+
+  .history-item {
+    background: white;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 4px;
+    border-left: 4px solid #2196f3;
+  }
+
+  .history-time {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .history-client {
+    font-weight: bold;
+    color: #2196f3;
+    font-family: monospace;
+  }
+
+  .history-message {
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+</style>
+
+<script>
+  const clientSelect = document.getElementById(
+    "clientSelect",
+  ) as HTMLSelectElement;
+  const refreshBtn = document.getElementById("refreshClients");
+  const messageText = document.getElementById(
+    "messageText",
+  ) as HTMLTextAreaElement;
+  const sendBtn = document.getElementById("sendBtn") as HTMLButtonElement;
+  const statusDiv = document.getElementById("status");
+  const clientInfoDiv = document.getElementById("clientInfo");
+  const historyDiv = document.getElementById("history");
+
+  let clients: any[] = [];
+  let sendHistory: any[] = [];
+
+  async function loadClients() {
+    try {
+      const response = await fetch("/api/subscribe");
+      const data = await response.json();
+      clients = data.clients || [];
+
+      // Update dropdown
+      clientSelect.innerHTML =
+        '<option value="">-- Select a client --</option>';
+      clientSelect.innerHTML +=
+        '<option value="BROADCAST">🔊 BROADCAST TO ALL</option>';
+
+      clients.forEach((client: any) => {
+        const option = document.createElement("option");
+        option.value = client.fullId;
+        option.textContent = `${client.id} (Connected: ${new Date(
+          client.connectedAt,
+        ).toLocaleString()})`;
+        clientSelect.appendChild(option);
+      });
+
+      if (clients.length === 0) {
+        clientSelect.innerHTML +=
+          '<option value="">No clients connected</option>';
+      }
+    } catch (error) {
+      console.error("Error loading clients:", error);
+      clientSelect.innerHTML =
+        '<option value="">Error loading clients</option>';
+    }
+  }
+
+  function showClientInfo() {
+    const selectedValue = clientSelect.value;
+
+    if (!selectedValue || selectedValue === "") {
+      if (clientInfoDiv) {
+        clientInfoDiv.classList.remove("visible");
+      }
+      return;
+    }
+
+    if (selectedValue === "BROADCAST") {
+      if (clientInfoDiv) {
+        clientInfoDiv.innerHTML = `
+          <strong>📡 Broadcast Mode</strong><br>
+          This notification will be sent to <strong>ALL ${clients.length} connected client(s)</strong>.
+        `;
+        clientInfoDiv.classList.add("visible");
+      }
+      return;
+    }
+
+    const client = clients.find((c) => c.fullId === selectedValue);
+    if (client && clientInfoDiv) {
+      clientInfoDiv.innerHTML = `
+        <strong>Client ID:</strong> ${client.fullId}<br>
+        <strong>Connected:</strong> ${new Date(client.connectedAt).toLocaleString()}<br>
+        <strong>Last Seen:</strong> ${new Date(client.lastSeen).toLocaleString()}<br>
+        ${client.userAgent ? `<strong>User Agent:</strong> ${client.userAgent}` : ""}
+      `;
+      clientInfoDiv.classList.add("visible");
+    }
+  }
+
+  function showStatus(message: string, type: "success" | "error") {
+    if (statusDiv) {
+      statusDiv.textContent = message;
+      statusDiv.className = `visible ${type}`;
+      setTimeout(() => {
+        statusDiv.classList.remove("visible");
+      }, 5000);
+    }
+  }
+
+  function addToHistory(
+    clientId: string,
+    message: string,
+    result: any,
+    broadcast: boolean,
+  ) {
+    const historyItem = {
+      time: new Date().toISOString(),
+      clientId: broadcast ? "BROADCAST" : clientId,
+      message: message,
+      sentTo: result.sentTo || 0,
+      broadcast: broadcast,
+    };
+
+    sendHistory.unshift(historyItem);
+    if (sendHistory.length > 10) sendHistory.pop(); // Keep last 10
+
+    updateHistoryDisplay();
+  }
+
+  function updateHistoryDisplay() {
+    if (!historyDiv) return;
+
+    if (sendHistory.length === 0) {
+      historyDiv.innerHTML = "<p>No notifications sent yet.</p>";
+      return;
+    }
+
+    historyDiv.innerHTML = sendHistory
+      .map(
+        (item) => `
+      <div class="history-item">
+        <div class="history-time">${new Date(item.time).toLocaleString()}</div>
+        <div class="history-client">
+          ${item.broadcast ? "🔊 BROADCAST" : item.clientId}
+          ${item.broadcast ? ` (sent to ${item.sentTo} client(s))` : ""}
+        </div>
+        <div class="history-message">"${item.message}"</div>
+      </div>
+    `,
+      )
+      .join("");
+  }
+
+  async function sendNotification() {
+    const clientId = clientSelect.value;
+    const message = messageText.value.trim();
+
+    if (!clientId || clientId === "") {
+      showStatus("Please select a client", "error");
+      return;
+    }
+
+    if (!message) {
+      showStatus("Please enter a message", "error");
+      return;
+    }
+
+    try {
+      sendBtn.disabled = true;
+      sendBtn.textContent = "Sending...";
+
+      const isBroadcast = clientId === "BROADCAST";
+      let url = `/notification?text=${encodeURIComponent(message)}`;
+      if (!isBroadcast) {
+        url += `&id=${encodeURIComponent(clientId)}`;
+      }
+
+      const response = await fetch(url);
+      const result = await response.json();
+
+      if (result.success) {
+        showStatus(
+          `✅ Notification sent successfully to ${result.sentTo} client(s)!`,
+          "success",
+        );
+        addToHistory(clientId, message, result, isBroadcast);
+        messageText.value = ""; // Clear textarea
+      } else {
+        showStatus("❌ Failed to send notification", "error");
+      }
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      showStatus("❌ Error sending notification: " + error, "error");
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.textContent = "Send Notification";
+    }
+  }
+
+  // Event listeners
+  refreshBtn?.addEventListener("click", loadClients);
+  clientSelect?.addEventListener("change", showClientInfo);
+  sendBtn?.addEventListener("click", sendNotification);
+
+  // Allow Ctrl+Enter to send
+  messageText?.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key === "Enter") {
+      sendNotification();
+    }
+  });
+
+  // Initial load
+  loadClients();
+  updateHistoryDisplay();
+</script>
