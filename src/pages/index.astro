@@ -400,7 +400,7 @@ import Layout from "../layouts/Layout.astro";
       const data = await response.json();
 
       if (data.success) {
-        addNotificationToList(data.message, data.timestamp);
+        // Don't add to list here - the push notification will add it when received
         updateStatus(`✅ Notification sent to ${data.sentTo} subscriber(s)!`);
       }
     } catch (error) {
