@@ -3,64 +3,189 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-  <h1>Connected Clients</h1>
-
-  <div class="container">
-    <div style="margin-bottom: 1rem;">
-      <a href="/" style="margin-right: 1rem;">← Back to Home</a>
-      <a href="/admin/send">⚙️ Admin - Send Messages</a>
+  <div class="page-container">
+    <div class="page-header">
+      <h1>Connected Clients</h1>
+      <p class="page-description">
+        View and manage all connected notification subscribers
+      </p>
     </div>
 
-    <button id="refreshClients">Refresh Client List</button>
+    <div class="actions-bar">
+      <button id="refreshClients" class="btn btn-primary">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+          ></path>
+        </svg>
+        Refresh Client List
+      </button>
+    </div>
 
-    <div id="clientsList"></div>
+    <div id="clientsList" class="clients-grid"></div>
   </div>
 </Layout>
 
 <style>
-  .container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 2rem;
+  .page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
   }
 
-  button {
-    background: #4caf50;
-    color: white;
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .page-header h1 {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .page-description {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+  }
+
+  .actions-bar {
+    margin-bottom: var(--spacing-xl);
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-start;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
     border: none;
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    margin: 0.5rem 0.5rem 1rem 0;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
   }
 
-  button:hover {
-    background: #45a049;
+  .btn:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: var(--color-text-inverse);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+  }
+
+  .btn-secondary {
+    background: var(--color-secondary);
+    color: var(--color-text-inverse);
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-secondary-dark);
+  }
+
+  .clients-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--spacing-lg);
   }
 
   .client-card {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 1rem;
-    margin: 0.5rem 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .client-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary-light);
   }
 
   .client-id {
-    font-family: monospace;
-    font-weight: bold;
-    color: #2196f3;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--color-primary);
+    word-break: break-all;
+    padding: var(--spacing-sm);
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-sm);
+  }
+
+  .client-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+  }
+
+  .client-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .client-info-label {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+
+  .client-info-value {
+    color: var(--color-text-primary);
   }
 
   .send-btn {
-    background: #2196f3;
-    padding: 8px 16px;
-    font-size: 14px;
+    width: 100%;
+    margin-top: var(--spacing-sm);
   }
 
-  .send-btn:hover {
-    background: #1976d2;
+  .empty-state {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--color-text-tertiary);
+    background: var(--color-surface);
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  .empty-state svg {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--spacing-lg);
+    color: var(--color-text-tertiary);
+    opacity: 0.5;
+  }
+
+  .loading-state {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--color-text-secondary);
   }
 </style>
 
@@ -70,34 +195,61 @@ import Layout from "../layouts/Layout.astro";
 
   async function loadClients() {
     try {
+      if (clientsList) {
+        clientsList.innerHTML = '<div class="loading-state">Loading clients...</div>';
+      }
+
       const response = await fetch("/api/subscribe");
       const data = await response.json();
 
       if (clientsList) {
         if (data.count === 0) {
-          clientsList.innerHTML = "<p>No clients connected yet.</p>";
-        } else {
           clientsList.innerHTML = `
-            <h3>Connected Clients (${data.count})</h3>
-            ${data.clients
-              .map(
-                (client: any) => `
-              <div class="client-card">
-                <div class="client-id">${client.id}</div>
-                <button class="send-btn" data-client-id="${client.fullId}">
-                  Send Test Notification
-                </button>
-              </div>
-            `,
-              )
-              .join("")}
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <h3>No Clients Connected</h3>
+              <p>No clients have subscribed to push notifications yet.</p>
+            </div>
           `;
+        } else {
+          clientsList.innerHTML = data.clients
+            .map(
+              (client: any) => `
+            <div class="client-card">
+              <div class="client-id">${client.id}</div>
+              <div class="client-info">
+                <div class="client-info-item">
+                  <span class="client-info-label">Status</span>
+                  <span class="client-info-value">🟢 Connected</span>
+                </div>
+                <div class="client-info-item">
+                  <span class="client-info-label">Connected</span>
+                  <span class="client-info-value">${new Date(client.connectedAt).toLocaleString()}</span>
+                </div>
+              </div>
+              <button class="btn btn-secondary send-btn" data-client-id="${client.fullId}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                Send Test Notification
+              </button>
+            </div>
+          `,
+            )
+            .join("");
 
           // Add event listeners to send buttons
           document.querySelectorAll(".send-btn").forEach((btn) => {
             btn.addEventListener("click", async (e) => {
               const target = e.target as HTMLButtonElement;
-              const clientId = target.getAttribute("data-client-id");
+              const clientId = target.getAttribute("data-client-id") || 
+                               target.closest("button")?.getAttribute("data-client-id");
               const message = prompt(
                 "Enter message:",
                 "Hello specific client!",
@@ -117,7 +269,12 @@ import Layout from "../layouts/Layout.astro";
     } catch (error) {
       console.error("Error loading clients:", error);
       if (clientsList) {
-        clientsList.innerHTML = "<p>Error loading clients.</p>";
+        clientsList.innerHTML = `
+          <div class="empty-state">
+            <h3>Error Loading Clients</h3>
+            <p>Failed to load client list. Please try again.</p>
+          </div>
+        `;
       }
     }
   }

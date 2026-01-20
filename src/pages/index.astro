@@ -4,89 +4,336 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-  <h1>Enable Push Notifications</h1>
-
-  <div class="container">
-    <div
-      id="clientIdDisplay"
-      style="background: #f0f0f0; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; font-family: monospace;"
-    >
-      <strong>Your Client ID:</strong>
-      <span id="clientIdValue">Loading...</span>
+  <div class="page-container">
+    <div class="page-header">
+      <h1>Push Notifications</h1>
+      <p class="page-description">
+        Enable push notifications to receive real-time updates
+      </p>
     </div>
 
-    <button id="enableNotifications">Enable Notifications</button>
-    <button id="testWebhook">Test Webhook</button>
+    <div class="content-grid">
+      <div class="main-column">
+        <div class="card">
+          <div class="card-header">
+            <h3>Your Client Information</h3>
+          </div>
+          <div class="card-body">
+            <div class="client-id-display">
+              <label>Client ID</label>
+              <div class="client-id-value" id="clientIdValue">Loading...</div>
+              <p class="help-text">
+                This unique ID identifies your device for push notifications
+              </p>
+            </div>
+          </div>
+        </div>
 
-    <div style="margin: 1rem 0;">
-      <a href="/clients" style="margin-right: 1rem;">📋 View All Clients</a>
-      <a href="/admin/send">⚙️ Admin - Send Messages</a>
-    </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Actions</h3>
+          </div>
+          <div class="card-body">
+            <div class="button-group">
+              <button id="enableNotifications" class="btn btn-primary">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                Enable Notifications
+              </button>
+              <button id="testWebhook" class="btn btn-secondary">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Test Notification
+              </button>
+            </div>
+          </div>
+        </div>
 
-    <div id="status"></div>
+        <div id="status" class="status-message"></div>
+      </div>
 
-    <div id="notifications">
-      <h2>Notifications:</h2>
-      <ul id="notificationList"></ul>
+      <div class="sidebar">
+        <div class="card">
+          <div class="card-header">
+            <h3>Recent Notifications</h3>
+          </div>
+          <div class="card-body">
+            <ul id="notificationList" class="notification-list"></ul>
+            <p class="empty-state" id="emptyState">
+              No notifications yet. Enable notifications and send a test!
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </Layout>
 
 <style>
-  .container {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
+  .page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
   }
 
-  button {
-    background: #4caf50;
-    color: white;
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .page-header h1 {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .page-description {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: var(--spacing-xl);
+    align-items: start;
+  }
+
+  @media (max-width: 968px) {
+    .content-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .main-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-secondary);
+  }
+
+  .card-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .card-body {
+    padding: var(--spacing-lg);
+  }
+
+  .client-id-display {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .client-id-display label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .client-id-value {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    padding: var(--spacing-md);
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-primary);
+    word-break: break-all;
+    font-weight: 500;
+  }
+
+  .help-text {
+    font-size: 0.875rem;
+    color: var(--color-text-tertiary);
+    margin-top: var(--spacing-xs);
+  }
+
+  .button-group {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
     border: none;
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    margin: 0.5rem;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
   }
 
-  button:hover {
-    background: #45a049;
+  .btn:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
   }
 
-  button:disabled {
-    background: #ccc;
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
   }
 
-  #status {
-    margin: 1rem 0;
-    padding: 1rem;
-    border-radius: 4px;
-    background: #f0f0f0;
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: var(--color-text-inverse);
   }
 
-  #notifications {
-    margin-top: 2rem;
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
   }
 
-  #notificationList {
+  .btn-secondary {
+    background: var(--color-surface);
+    color: var(--color-primary);
+    border: 1px solid var(--color-border);
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-primary);
+  }
+
+  .status-message {
+    display: none;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+    animation: slideIn 0.3s ease;
+  }
+
+  .status-message.show {
+    display: block;
+  }
+
+  .status-message.success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+  }
+
+  .status-message.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+  }
+
+  .status-message.info {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+  }
+
+  .notification-list {
     list-style: none;
     padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
   }
 
-  #notificationList li {
-    background: #e3f2fd;
-    padding: 1rem;
-    margin: 0.5rem 0;
-    border-radius: 4px;
-    border-left: 4px solid #2196f3;
+  .notification-list:empty + .empty-state {
+    display: block;
+  }
+
+  .notification-list:not(:empty) + .empty-state {
+    display: none;
+  }
+
+  .notification-list li {
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    animation: slideIn 0.3s ease;
+  }
+
+  .notification-list li strong {
+    display: block;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xs);
   }
 
   .timestamp {
-    font-size: 0.85rem;
-    color: #666;
-    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary);
+    font-weight: 500;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--color-text-tertiary);
+    font-size: 0.875rem;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: calc(var(--spacing-2xl) + 60px);
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>
 
@@ -126,6 +373,10 @@ import Layout from "../layouts/Layout.astro";
   function updateStatus(message: string) {
     if (statusDiv) {
       statusDiv.textContent = message;
+      statusDiv.className = "status-message show info";
+      setTimeout(() => {
+        statusDiv.classList.remove("show");
+      }, 5000);
     }
   }
 

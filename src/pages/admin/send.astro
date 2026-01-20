@@ -3,181 +3,411 @@ import Layout from "../../layouts/Layout.astro";
 ---
 
 <Layout>
-  <h1>Admin - Send Notifications</h1>
-
-  <div class="container">
-    <div class="form-section">
-      <label for="clientSelect">
-        <strong>Select Client:</strong>
-      </label>
-      <select id="clientSelect">
-        <option value="">Loading clients...</option>
-      </select>
-      <button id="refreshClients" class="secondary-btn">Refresh</button>
-
-      <div class="client-info" id="clientInfo"></div>
-
-      <label for="messageText">
-        <strong>Message:</strong>
-      </label>
-      <textarea
-        id="messageText"
-        placeholder="Enter your notification message..."
-        rows="6"></textarea>
-
-      <button id="sendBtn" class="primary-btn">Send Notification</button>
-
-      <div id="status"></div>
+  <div class="page-container">
+    <div class="page-header">
+      <h1>Send Notifications</h1>
+      <p class="page-description">
+        Send push notifications to individual clients or broadcast to all
+      </p>
     </div>
 
-    <div class="history-section">
-      <h2>Send History</h2>
-      <div id="history"></div>
+    <div class="content-layout">
+      <div class="form-card card">
+        <div class="card-header">
+          <h3>Compose Notification</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="clientSelect" class="form-label">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              Select Recipient
+            </label>
+            <div class="select-group">
+              <select id="clientSelect" class="form-select">
+                <option value="">Loading clients...</option>
+              </select>
+              <button id="refreshClients" class="btn-icon" title="Refresh">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path
+                    d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="client-info" id="clientInfo"></div>
+
+          <div class="form-group">
+            <label for="messageText" class="form-label">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                ></path>
+              </svg>
+              Message
+            </label>
+            <textarea
+              id="messageText"
+              class="form-textarea"
+              placeholder="Enter your notification message..."
+              rows="6"></textarea>
+            <div class="help-text">
+              Tip: Press Ctrl+Enter to send quickly
+            </div>
+          </div>
+
+          <button id="sendBtn" class="btn btn-primary btn-large">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+            Send Notification
+          </button>
+
+          <div id="status" class="status-message"></div>
+        </div>
+      </div>
+
+      <div class="history-card card">
+        <div class="card-header">
+          <h3>Recent Activity</h3>
+        </div>
+        <div class="card-body">
+          <div id="history"></div>
+        </div>
+      </div>
     </div>
   </div>
 </Layout>
 
 <style>
-  .container {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 2rem;
+  .page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
   }
 
-  .form-section {
-    background: #f9f9f9;
-    padding: 2rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
   }
 
-  label {
-    display: block;
-    margin: 1rem 0 0.5rem 0;
-    font-size: 16px;
+  .page-header h1 {
+    margin-bottom: var(--spacing-sm);
   }
 
-  select,
-  textarea {
+  .page-description {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+  }
+
+  .content-layout {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: var(--spacing-xl);
+    align-items: start;
+  }
+
+  @media (max-width: 968px) {
+    .content-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-secondary);
+  }
+
+  .card-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .card-body {
+    padding: var(--spacing-lg);
+  }
+
+  .form-group {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .form-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .form-label svg {
+    color: var(--color-primary);
+  }
+
+  .select-group {
+    display: flex;
+    gap: var(--spacing-sm);
+  }
+
+  .form-select {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-family: var(--font-family);
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    transition: all 0.2s ease;
+  }
+
+  .form-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  .form-textarea {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    font-family: inherit;
-    box-sizing: border-box;
-  }
-
-  select {
-    margin-bottom: 0.5rem;
-    background: white;
-  }
-
-  textarea {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-family: var(--font-family);
     resize: vertical;
     min-height: 120px;
+    transition: all 0.2s ease;
   }
 
-  .primary-btn,
-  .secondary-btn {
-    color: white;
+  .form-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
     border: none;
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    margin: 0.5rem 0.5rem 0.5rem 0;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
   }
 
-  .primary-btn {
-    background: #4caf50;
-    width: 100%;
-    font-weight: bold;
+  .btn:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
   }
 
-  .primary-btn:hover {
-    background: #45a049;
+  .btn:active {
+    transform: translateY(0);
   }
 
-  .primary-btn:disabled {
-    background: #ccc;
+  .btn:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
   }
 
-  .secondary-btn {
-    background: #2196f3;
-    display: inline-block;
-    width: auto;
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: var(--color-text-inverse);
   }
 
-  .secondary-btn:hover {
-    background: #1976d2;
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+  }
+
+  .btn-large {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1.125rem;
+  }
+
+  .btn-icon {
+    padding: 0.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-icon:hover {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-primary);
+  }
+
+  .btn-icon svg {
+    color: var(--color-text-secondary);
+  }
+
+  .btn-icon:hover svg {
+    color: var(--color-primary);
   }
 
   .client-info {
-    background: #e3f2fd;
-    padding: 1rem;
-    border-radius: 4px;
-    margin: 1rem 0;
+    background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+    font-size: 0.875rem;
+    border: 1px solid #c4b5fd;
     display: none;
-    font-size: 14px;
   }
 
   .client-info.visible {
     display: block;
+    animation: slideIn 0.3s ease;
   }
 
-  #status {
-    margin-top: 1rem;
-    padding: 1rem;
-    border-radius: 4px;
+  .client-info strong {
+    color: var(--color-text-primary);
+  }
+
+  .help-text {
+    font-size: 0.875rem;
+    color: var(--color-text-tertiary);
+    margin-top: var(--spacing-xs);
+  }
+
+  .status-message {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
     display: none;
   }
 
-  #status.visible {
+  .status-message.visible {
     display: block;
+    animation: slideIn 0.3s ease;
   }
 
-  #status.success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+  .status-message.success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
   }
 
-  #status.error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+  .status-message.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
   }
 
-  .history-section {
-    background: #f9f9f9;
-    padding: 2rem;
-    border-radius: 8px;
+  .history-card {
+    position: sticky;
+    top: calc(var(--spacing-2xl) + 60px);
+    max-height: calc(100vh - var(--spacing-2xl) - 100px);
+    overflow-y: auto;
   }
 
   .history-item {
-    background: white;
-    padding: 1rem;
-    margin: 0.5rem 0;
-    border-radius: 4px;
-    border-left: 4px solid #2196f3;
+    background: var(--color-bg-secondary);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-primary);
+    animation: slideIn 0.3s ease;
   }
 
   .history-time {
-    font-size: 12px;
-    color: #666;
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary);
+    font-weight: 500;
   }
 
   .history-client {
-    font-weight: bold;
-    color: #2196f3;
-    font-family: monospace;
+    font-weight: 600;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    margin: var(--spacing-xs) 0;
   }
 
   .history-message {
-    margin-top: 0.5rem;
+    margin-top: var(--spacing-sm);
     font-style: italic;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+  }
+
+  .empty-history {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--color-text-tertiary);
+    font-size: 0.875rem;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>
 
@@ -296,7 +526,7 @@ import Layout from "../../layouts/Layout.astro";
     if (!historyDiv) return;
 
     if (sendHistory.length === 0) {
-      historyDiv.innerHTML = "<p>No notifications sent yet.</p>";
+      historyDiv.innerHTML = '<div class="empty-history">No notifications sent yet.</div>';
       return;
     }
 
@@ -307,7 +537,7 @@ import Layout from "../../layouts/Layout.astro";
         <div class="history-time">${new Date(item.time).toLocaleString()}</div>
         <div class="history-client">
           ${item.broadcast ? "🔊 BROADCAST" : item.clientId}
-          ${item.broadcast ? ` (sent to ${item.sentTo} client(s))` : ""}
+          ${item.broadcast ? ` (${item.sentTo} client${item.sentTo !== 1 ? 's' : ''})` : ""}
         </div>
         <div class="history-message">"${item.message}"</div>
       </div>
