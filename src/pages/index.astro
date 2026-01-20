@@ -7,8 +7,12 @@ import Layout from "../layouts/Layout.astro";
   <h1>Enable Push Notifications</h1>
 
   <div class="container">
-    <div id="clientIdDisplay" style="background: #f0f0f0; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; font-family: monospace;">
-      <strong>Your Client ID:</strong> <span id="clientIdValue">Loading...</span>
+    <div
+      id="clientIdDisplay"
+      style="background: #f0f0f0; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; font-family: monospace;"
+    >
+      <strong>Your Client ID:</strong>
+      <span id="clientIdValue">Loading...</span>
     </div>
 
     <button id="enableNotifications">Enable Notifications</button>
@@ -95,17 +99,20 @@ import Layout from "../layouts/Layout.astro";
 
   // Generate or retrieve client ID
   function getClientId(): string {
-    let id = localStorage.getItem('clientId');
+    let id = localStorage.getItem("clientId");
     if (!id) {
-      id = 'client-' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      localStorage.setItem('clientId', id);
+      id =
+        "client-" +
+        Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
+      localStorage.setItem("clientId", id);
     }
     return id;
   }
 
   clientId = getClientId();
-  console.log('Client ID:', clientId);
-  
+  console.log("Client ID:", clientId);
+
   // Display client ID
   if (clientIdValueSpan) {
     clientIdValueSpan.textContent = clientId;
@@ -165,7 +172,7 @@ import Layout from "../layouts/Layout.astro";
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           subscription: subscription,
-          clientId: clientId
+          clientId: clientId,
         }),
       });
 
@@ -174,7 +181,9 @@ import Layout from "../layouts/Layout.astro";
       console.log("Your Client ID:", result.clientId);
 
       // Show client ID in status
-      updateStatus(`✅ Push notifications enabled! Your Client ID: ${result.clientId}`);
+      updateStatus(
+        `✅ Push notifications enabled! Your Client ID: ${result.clientId}`,
+      );
 
       return subscription;
     } catch (error) {

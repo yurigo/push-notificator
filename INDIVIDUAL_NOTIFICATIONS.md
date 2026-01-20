@@ -3,6 +3,7 @@
 ## How It Works
 
 Each browser/client gets a unique `clientId` that is:
+
 - Generated automatically when you first visit the page
 - Stored in `localStorage` so it persists across page reloads
 - Displayed prominently at the top of the page
@@ -11,18 +12,22 @@ Each browser/client gets a unique `clientId` that is:
 ## Usage Examples
 
 ### 1. Broadcast to ALL Clients
+
 ```bash
 curl "http://localhost:4321/notification?text=Hello%20everyone"
 ```
 
 ### 2. Send to a SPECIFIC Client
+
 ```bash
 # Replace 'client-abc123xyz' with the actual client ID
 curl "http://localhost:4321/notification?text=Private%20message&id=client-abc123xyz"
 ```
 
 ### 3. View All Connected Clients
+
 Open http://localhost:4321/clients in your browser to see:
+
 - List of all connected clients
 - Their client IDs
 - Quick buttons to send test notifications to each one

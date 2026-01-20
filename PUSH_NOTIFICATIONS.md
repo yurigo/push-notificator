@@ -71,13 +71,16 @@ In production, any service can call your webhook to trigger push notifications:
 ## API Endpoints
 
 ### `GET /notification?text=<message>&id=<optional>`
+
 Trigger push notifications.
 
 **Parameters:**
+
 - `text` (required) - The notification message
 - `id` (optional) - Specific client ID to send to. If omitted, broadcasts to ALL clients.
 
 **Examples:**
+
 ```
 # Broadcast to all
 GET /notification?text=Hello%20everyone
@@ -87,12 +90,15 @@ GET /notification?text=Private%20message&id=client-abc123
 ```
 
 ### `GET /api/subscribe`
+
 Get list of all connected clients.
 
 ### `POST /api/subscribe`
+
 Subscribe a client to push notifications (called automatically by the UI).
 
 ### `GET /clients`
+
 Web UI to view all connected clients and send individual notifications.
 
 ## Environment Variables
